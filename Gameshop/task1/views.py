@@ -1,9 +1,23 @@
 from django.shortcuts import render
 from .forms import UserRegister
-from .models import Buyer, Game
+from .models import *
+from django.core.paginator import Paginator
 
 
-# Create your views here.
+def news(request):
+    pagename = 'Новости'
+    news_ = News.objects.all().order_by('-date')
+    print(news_)
+    paginator = Paginator(news_, 3)
+    print(paginator)
+    page_number = request.GET.get('page')
+    print(page_number)
+    page_obj = paginator.get_page(page_number)
+    print(page_obj)
+    return render(request, 'news.html',
+                  {'pagename': pagename, 'page_obj': page_obj})
+
+
 def platform(request):
     pagename = 'Главная страница'
     context = {'pagename': pagename}
@@ -23,7 +37,7 @@ def cart(request):
     return render(request, 'cart.html', context)
 
 
-# Create your views here.
+# Регистрация
 def sign_up_by_django(request):
     info = {}
     if request.method == 'POST':
@@ -33,7 +47,6 @@ def sign_up_by_django(request):
             password = form.cleaned_data['password']
             repeat_password = form.cleaned_data['repeat_password']
             age = form.cleaned_data['age']
-
 
             if Buyer.objects.filter(name=username).exists():
                 info['error'] = 'Пользователь уже существует'
@@ -76,9 +89,7 @@ def sign_up_by_html(request):
             Buyer.objects.create(name=username, balance=10000, age=age)
             return render(request, 'registration_page.html', {'welcome': info['welcome']})
 
-
-
     return render(request, 'registration_page.html')
-from django.shortcuts import render
 
-# Create your views here.
+
+from django.shortcuts import render

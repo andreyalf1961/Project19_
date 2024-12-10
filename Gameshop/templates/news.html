@@ -1,0 +1,37 @@
+{% extends 'menu.html' %}
+
+{% block title %}news{% endblock %}
+
+{{% block pagename %}
+    <h1>{{pagename}}</h1>
+{% endblock %}
+
+{% block menu %}{{block.super}}{% endblock %}
+
+{% block content %}
+       <ul>
+        {% for n in page_obj %}
+            <li>
+                {{ n.title }} ({{ n.date }})
+                <p>{{ n.content }}</p>
+            </li>
+        {% empty %}
+            <p>Нет новостей.</p>
+        {% endfor %}
+    </ul>
+    <!-- показываем пагинатор -->
+    <div class="pagination">
+        <p>Страницы:</p>
+         <ul>
+            {% if page_obj.has_previous %}
+                <li><a href="?page=1"><<</a></li>
+                <li><a href="?page={{ page_obj.previous_page_number }}">Назад</a></li>
+            {% endif %}
+            <li>{{ page_obj.number }}/{{ paginator.num_pages }}</li>
+            {% if page_obj.has_next %}
+                <li><a href="?page={{ page_obj.next_page_number }}">Вперед</a></li>
+                <li><a href="?page={{ paginator.num_pages }}">>>></a></li>
+            {% endif %}
+        </ul>
+    </div>
+{% endblock %}
